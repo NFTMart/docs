@@ -1,0 +1,119 @@
+# NFTMart Listing Requirements
+Listings can be requested by [Joining Our Discord](https://discord.gg/FqeCkUqYsC) and asking about listing in an appropriate channel (i.e. #help)
+
+## Required
+
+1. You are required to run your own image server that we can access the NFT images through. The pattern must follow /GROUPING/NFT-NAME. We can work on some variation of that, but all images must follow a pattern which can be disserned from just the NFT instance itself and using grouping provided by the hive-engine api. This must be done when initally enabling grouping on hive-engine(<a href="https://github.com/hive-engine/steemsmartcontracts-wiki/blob/master/NFT-Market-Contract.md#setgroupby">See here for documentation</a>). As this can only be done once, if you are unsure, we recommend discussing with us what properties you should have in grouping. If any data is not in grouping but in other properties(<a href="https://github.com/hive-engine/steemsmartcontracts-wiki/blob/master/NFT-Market-Contract.md#setgroupby">See here for documentation</a>), we can still pull it, but additional resources will be required and might incur a charge.
+
+2. We will not pull images from a public image service(ex. the public IPFS gateway, Imgur), everything has to be hosted either by you or using a private service which will allow us to pull images at our discretion. All images must go through our cache, as this allows our site to load faster and saves our users bandwidth.
+
+3. All data must be on Hive-Engine. All NFTs must be on hive engine and all data must be able to be pulled from there. We must not be required to use an external API to get nft info(we are potentially flexible for well established games, but be warned we might generate a lot of traffic which you should be able to handle).
+
+4. 20% fee cap. If you do have market fee enabled to one account, that amount must not exceed 20%. This will be validated regularly and non compliance will result in delisting.
+
+5. You must provide us with a point of contact in order to discuss future changes. 
+
+6. Please provide us with a list of tokens to be used purchase your NFTs.
+
+7. Future updates where we manually have to intervene will be subject to a fee, however we may waive this at our discretion. Because of this, we strongly recommend that you work out any details of images and other data beforehand and stick to the format so that you do not incur any additional fee, and will not have to contact us in order to update images (saving us all time).
+
+8. While we generally do not charge listing fees, if your game has a requirement to be implemented in a unique way that will use a considerable amount of time, we may charge a fee to pay for the work required to list your Game/NFT.
+
+9. We don't generally list tokens at the request of the token owner, but at the request of the game owner.
+
+10. Be good natured and friendly.
+
+
+<hr/>
+
+
+### Example image server configurations: 
+
+NFT Properties:
+```
+_id
+Name
+Rarity
+```
+
+NFT Groupings:
+```
+Name
+Rarity
+```
+
+We would expect the image server to handle requests to `https://example.com/images/${Rarity}/${Name}`.
+
+When we request data from the hive-engine api, we will get the result with something like the following: 
+
+```json
+{
+  "_id": 1,
+  "account": "null",
+  "ownedBy": "u",
+  "nftId": "1",
+  "grouping": {
+    "Rarity": "Common",
+    "Name": "Frozen Cheesecake"
+  },
+  "timestamp": 1,
+  "price": "1.00000000",
+  "priceDec": {
+    "$numberDecimal": "1.00000000"
+  },
+  "priceSymbol": "SWAP.HIVE",
+  "fee": 500
+}
+```
+
+In the same case, if Name wasn't in the groupings(so it was just Rarity), with just grouping data, it would be impossible for us to pull the NFT's name. Data returned from hive-engine will look something like the following:
+
+
+```json
+{
+  "_id": 1,
+  "account": "null",
+  "ownedBy": "u",
+  "nftId": "1",
+  "grouping": {
+    "Rarity": "Common"
+  },
+  "timestamp": 1,
+  "price": "1.00000000",
+  "priceDec": {
+    "$numberDecimal": "1.00000000"
+  },
+  "priceSymbol": "SWAP.HIVE",
+  "fee": 500
+}
+```
+
+Notice how there's no `Name` in the grouping? There's no way for us to figure out what the `Name` is from just that. What we do have the ability to do is to pull properties and get more data from our interal service, which will result in something like the following:
+
+```json
+{
+  "_id": 1,
+  "account": "null",
+  "ownedBy": "u",
+  "nftId": "1",
+  "grouping": {
+    "Rarity": "Common"
+  },
+  "timestamp": 1,
+  "price": "1.00000000",
+  "priceDec": {
+    "$numberDecimal": "1.00000000"
+  },
+  "priceSymbol": "SWAP.HIVE",
+  "fee": 500,
+  "hiveEquivalent": "1.000",
+  "details": "{\"Name\":\"Frozen Cheesecake\",\"Rarity\":\"Common\"}"
+}
+```
+
+However, doing this adds additional load onto our service which could have been avoided by having both Name and Rarity be added to groupings when first being created. If we need to resort to this, an additional monthly charge will be applied in order to deal with the increased resources. If there is enough monthly revenue generated by your game, this fee could potentially be waived.
+
+
+<hr>
+
+<sub>Changes to the requirements might be made at any time without notice, please be diligent and check for updates. However, we will always try to be as fair as possible.</sub>
